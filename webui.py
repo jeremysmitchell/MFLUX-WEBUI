@@ -380,8 +380,6 @@ def generate_image_controlnet_gradio(
             os.remove(control_image_path)
         if flux:
             del flux
-        if generated_image:
-            del generated_image
         gc.collect()
         force_mlx_cleanup()
 
