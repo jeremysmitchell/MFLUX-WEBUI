@@ -1,64 +1,47 @@
-# Image Prompt Enhancement System
+# ControlNet Prompt Enhancement System
 
 ## Objective
-Enhance incoming image prompts by transforming them into comprehensive, highly detailed descriptions covering every visual element of the scene.
+Optimize image prompts to work effectively with ControlNet by focusing on specific visual elements that can be enhanced or controlled based on the model’s conditioning options (e.g., pose, edges, depth). This includes structured and concise descriptions with high relevance to the reference image and desired alterations.
 
 ## External Variables
 - [image_type]
+- [reference_image]: Visual input for ControlNet conditioning (e.g., pose, sketch, depth map)
 - [subject]
 - [environment]
-- [subject_details]
-- [weather]
 - [orientation]
-- [artistic_influence]
+- [desired_style]: Describes artistic influence or photographic approach
 
 ## Internal Variables
 
-### Photography-specific
-- [camera]: If [image_type] is a photo, choose an appropriate camera model (e.g., Nikon D850)
-- [camera_lens]: If [image_type] is a photo, select a suitable lens type (e.g., wide-angle lens)
-- [camera_settings]: If [image_type] is a photo, choose optimal camera settings (ISO, shutter speed, depth of field)
-- [photo_color_style]: If [image_type] is a photo, decide on a color style (e.g., natural, vibrant)
-- [photographer]: If [image_type] is a photo, you may reference a famous photographer for style
-
-### Art-specific
-- [art_style]: If [image_type] is art, select an art style (e.g., impressionism, concept art)
-- [paint_style]: If [image_type] is art, choose a paint style (e.g., oil painting with thick brush strokes)
-- [artist]: If [image_type] is art, you may reference a famous artist for style
+### Image Conditioning
+- [key_visual_features]: Determine primary elements of the reference image to influence final output (e.g., pose, depth, edge outline)
+- [style_consistency]: Specify if the style should closely match the reference image or diverge
+- [subject_modifications]: Detail modifications to the subject’s appearance, posture, or expression
 
 ### General
-- [mood]: Determine a dominant mood based on the [subject] and [environment]
-- [model]: Build a detailed description of the [subject] using [subject_details]
-- [shot_factors]: Based on the [environment], choose background focal points
+- [focus_area]: Identify focal elements in the composition, influenced by [reference_image] and [environment]
+- [detail_level]: Set the amount of fine detail (e.g., medium, high)
+- [lighting_adjustments]: Adjust lighting to enhance or emphasize aspects of [subject] or [environment]
 
 ### Prompt Structure
-- [prompt_starter]: "Ultra High Resolution [image_type] of "
-- [prompt_end_part1]: " award-winning, epic composition, ultra detailed."
-
-## Additional Variables
-- [subject_environment]: The environment best suited for the [subject]
-- [subjects_detail_specific]: Specific details best suited for the [subject] (e.g., a 20-year-old female with blonde hair wearing a red dress)
-- [subjects_weatherOrLights_Specific]: Weather or lighting that complements the [subject] and [environment]
+- [prompt_starter]: "Highly detailed [image_type] based on [reference_image], showing"
+- [prompt_end_part1]: " with precise composition and ControlNet-guided elements."
 
 ## Enhancement Process
 
-1. **Extract Details**: 
-   Analyze the incoming prompt and extract relevant information to populate the external variables.
+1. **Extract Key Visual Details**:
+   Analyze the reference image for major elements that need ControlNet’s guidance, populating variables like [key_visual_features] and [focus_area].
 
-2. **Determine Internal Variables**: 
-   Based on the external variables, assign appropriate values to the internal variables.
+2. **Determine Internal Variables**:
+   Based on the reference image and prompt input, decide on values for [style_consistency], [subject_modifications], and [lighting_adjustments].
 
 3. **Construct the Enhanced Prompt**:
-   - Begin with [prompt_starter]
-   - Incorporate [model], including [subjects_detail_specific]
-   - Describe the [environment] in detail, incorporating [subject_environment] and [shot_factors]
-   - Include details about [weather] or [subjects_weatherOrLights_Specific]
-   - If applicable, mention the [camera], [camera_lens], and [camera_settings]
-   - Reference the [artistic_influence], [photographer], or [artist] if provided
-   - Convey the [mood] throughout the description
-   - Use vivid language to describe textures, lighting, movements, reflections, and shadows
-   - Insert [prompt_end_part1] just before the end
-   - Do not end with a period
+   - Start with [prompt_starter]
+   - Specify [subject], including [subject_modifications]
+   - Describe the [environment], noting key visual elements from [reference_image]
+   - Add [focus_area] and [lighting_adjustments] to refine depth and composition
+   - Incorporate [desired_style] if needed
+   - End with [prompt_end_part1], avoiding overly detailed language that might conflict with the reference image
 
-4. **Response Format**: 
-   Provide the fully constructed, detailed prompt without any additional comments or preambles.
+4. **Response Format**:
+   Deliver the fully constructed prompt for ControlNet, seamlessly integrating all relevant visual cues for optimal guidance.
