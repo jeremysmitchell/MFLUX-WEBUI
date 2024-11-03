@@ -196,14 +196,22 @@ def create_ollama_settings(include_prompt_selector=False, prompt_type="standard"
             lines=10,
             value=prompts[prompt_choices[0]]
         )
+        warning_text = gr.Markdown(
+            "⚠ Note: Make sure you are using a vision model with this prompt.",
+            visible=False
+        )
         
-        def update_system_prompt(selected_prompt):
-            return prompts[selected_prompt]
+        def update_system_prompt_and_warning(selected_prompt):
+            show_warning = selected_prompt != "Standard"
+            return {
+                system_prompt: prompts[selected_prompt],
+                warning_text: gr.update(visible=show_warning)
+            }
         
         prompt_selector.change(
-            fn=update_system_prompt,
-            inputs=[prompt_selector],
-            outputs=[system_prompt]
+            fn=update_system_prompt_and_warning,
+            inputs=prompt_selector,
+            outputs=[system_prompt, warning_text]
         )
     else:
         system_prompt = gr.Textbox(
@@ -212,11 +220,12 @@ def create_ollama_settings(include_prompt_selector=False, prompt_type="standard"
             value=list(prompts.values())[0]
         )
         prompt_selector = None
+        warning_text = None
 
     save_button = gr.Button("Save Ollama Settings")
     
     if include_prompt_selector:
-        return [ollama_model, system_prompt, save_button, prompt_selector]
+        return [ollama_model, system_prompt, save_button, prompt_selector, warning_text]
     else:
         return [ollama_model, system_prompt, save_button]
 
@@ -1270,9 +1279,7 @@ def create_ui():
                     with gr.Accordion("⚙️ Ollama Settings", open=False) as ollama_section_cn:
                         ollama_components_cn = create_ollama_settings(include_prompt_selector=True, prompt_type="controlnet")
                     
-                    ollama_model_cn, system_prompt_cn, save_button_cn, prompt_selector_cn = ollama_components_cn
-
-                    gr.Markdown("⚠ Note: If you use the ControlNet Prompt, make sure you are using a vision model.")
+                    ollama_model_cn, system_prompt_cn, save_button_cn, prompt_selector_cn, warning_text_cn = ollama_components_cn
 
                     enhance_ollama_cn = gr.Button("Enhance prompt with Ollama")
 
@@ -1374,7 +1381,7 @@ def create_ui():
                     inputs=[],
                     outputs=[lora_files_cn]
                 )
-
+                
                 metadata_cn = gr.Checkbox(label="Export Metadata as JSON", value=False)
                 save_canny = gr.Checkbox(label="Save Canny Edge Detection Image", value=False)
                 generate_button_cn = gr.Button("Generate Image", variant='primary')
@@ -1407,6 +1414,7 @@ def create_ui():
                         prompt_i2i = gr.Textbox(label="Prompt", lines=2)
                         with gr.Accordion("⚙️ Ollama Settings", open=False) as ollama_section_i2i:
                             ollama_components_i2i = create_ollama_settings(include_prompt_selector=True, prompt_type="i2i")
+                        
                         with gr.Row():
                             enhance_ollama_i2i = gr.Button("Enhance prompt with Ollama")
                         ollama_components_i2i[2].click(
